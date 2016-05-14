@@ -5,8 +5,9 @@
 To install this library, run:
 
 ```bash
-$ npm install dragger --save
+$ npm install ionic-debug-console --save
 ```
+
 
 ## Development
 
