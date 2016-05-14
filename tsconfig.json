@@ -7,7 +7,7 @@
     "experimentalDecorators": true,
     "sourceMap": true,
     "declaration": true,
-    "outDir": "../frontend/node_modules/ionic-debug-console"
+    "outDir": "."
   },
   "files": [
     "node_modules/angular2/typings/browser.d.ts",
@@ -15,8 +15,7 @@
     "src/services/consoleExceptionHandler.service.ts"
   ],
   "exclude": [
-    "node_modules",
-    "dist/**/*.ts"
+    "node_modules"
   ],
   "compileOnSave": false,
   "buildOnSave": false,

@@ -1,4 +1,4 @@
-# dragger
+# Ionic Debug Console
 
 ## Installation
 
