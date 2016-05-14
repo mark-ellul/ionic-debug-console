@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "module": "commonjs",
+    "target": "es5",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "declaration": true,
+    "outDir": "../frontend/node_modules/ionic-debug-console"
+  },
+  "files": [
+    "node_modules/angular2/typings/browser.d.ts",
+    "ionic-debug-console.ts",
+    "src/services/consoleExceptionHandler.service.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist/**/*.ts"
+  ],
+  "compileOnSave": false,
+  "buildOnSave": false,
+  "atom": {
+    "rewriteTsconfig": true
+  },
+  "postinstall": "typings install"
+}

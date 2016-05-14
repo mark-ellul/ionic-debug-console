@@ -1,0 +1,43 @@
+{
+  "name": "ionic-debug-console",
+  "version": "0.1.0",
+  "scripts": {
+    "test": "tsc && karma start",
+    "prepublish": "tsc",
+    "tsc": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/username/repo"
+  },
+  "author": {
+    "name": "Lukas Pikora",
+    "email": "lpikora@gmail.com"
+  },
+  "keywords": [
+    "angular",
+    "angular2"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/username/repo/issues"
+  },
+  "main": "ionic-debug-console.js",
+  "typings": "./ionic-debug-console.d.ts",
+  "dependencies": {
+    "angular2": "2.0.0-beta.13",
+    "es6-promise": "3.0.2",
+    "es6-shim": "^0.35.0",
+    "ionic-angular": "2.0.0-beta.4",
+    "ionic-native": "^1.1.0",
+    "ionicons": "3.0.0-alpha.3",
+    "reflect-metadata": "0.1.2",
+    "rxjs": "5.0.0-beta.2",
+    "zone.js": "0.6.6",
+    "syntaxhighlighter": "4.0.1"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=0.8.0"
+  }
+}
