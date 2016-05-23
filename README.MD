@@ -18,7 +18,7 @@ or from local folder
 $ npm install relative_path_to_local_folder_with_this_repo --save
 ```
 
-Then set up your application app.ts file:
+Then set up your application app.ts like in example:
 
 https://github.com/lpikora/ionic-debug-console-testapp
 
