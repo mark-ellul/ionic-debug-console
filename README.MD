@@ -30,19 +30,21 @@ To generate all `*.js`, `*.js.map` and `*.d.ts` files:
 $ npm run tsc
 ```
 
-## Ionic Debug Console Server
+## Other repos
+
+### Ionic Debug Console Server
 
 Ionic Debug Console server with REST API for error tracking.
 
 https://github.com/lpikora/ionic-debug-console-backend-api
 
-## Ionic Debug Console Server UI
+### Ionic Debug Console Server UI
 
 User interface for Ionic Debug Console Server. Provide managing apps and displaying tracked logs and errors.
 
 https://github.com/lpikora/ionic-debug-console-backend-ui
 
-## Example app with Ionic Debug Console intergation
+### Example app with Ionic Debug Console intergation
 
 Example of Ionic Debug Console itegration in Ionic 2 app.
 
