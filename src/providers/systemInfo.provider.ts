@@ -25,8 +25,12 @@ export class SystemInfoProvider {
           data.push(item);
       }
 
+      // // for test in browser
+      //   data.push({title: "platform", value: "testplaform"});
+      //   data.push({title: "version", value: "5.2"});
+
       this.data = this.processData(data);
-      resolve(data);
+      resolve(this.data);
     });
   }
 
@@ -35,13 +39,7 @@ export class SystemInfoProvider {
   }
 
   getDetails() {
-
     return this.load().then(data => {
-      // return data.sort((a, b) => {
-      //   let aName = a.name.split(' ').pop();
-      //   let bName = b.name.split(' ').pop();
-      //   return aName.localeCompare(bName);
-      // });
       return data;
     });
   }

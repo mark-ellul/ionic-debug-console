@@ -16,8 +16,10 @@ export class ConsoleArgumentCodeComponent {
   // how to get to native Element of component
   // http://stackoverflow.com/questions/30623825/how-to-use-jquery-with-angular2
   ngAfterViewInit() {
-    if(hljs){
-      hljs.highlightBlock(this.el.nativeElement);
+    if(typeof hljs != 'undefined'){
+      if(this.el.nativeElement) {
+        hljs.highlightBlock(this.el.nativeElement);
+      }
     }
   }
 

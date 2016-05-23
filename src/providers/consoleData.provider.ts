@@ -11,7 +11,6 @@ export class ConsoleDataProvider {
   data: ConsoleItem[] = [];
   consoleConfig: any;
   timer: any;
-  // uuid: any;
   uuid: any = 12541;
   counts: number[] = [];
 
@@ -42,18 +41,7 @@ export class ConsoleDataProvider {
   }
 
   sendDataToServer(){
-
-    this.systemInfoProvider.getUUID().then((uuid)=>{
-      if(uuid){
         this._appConsoleService.sendConsoleItems(this.data);
-      }else{
-        console.error("No uuid found.")
-      }
-
-    });
-
-    //this._appConsoleService.sendData().then(data => this.consoleConfig = data)
-
   }
 
   // source: http://tobyho.com/2012/07/27/taking-over-console-log/
@@ -84,12 +72,17 @@ export class ConsoleDataProvider {
   pushItem(method, args) {
     this.increaseCount(method);
     var processedArgs = this.processArguments(args);
-    var dateTime = new Date().toISOString();
+    var dateTime = Date.now();
     var item = {method: method, arguments: processedArgs, dateTime: dateTime, synced: false};
     this.data.push(item);
   }
 
   increaseCount(method) {
+
+    if(method == 'error') {
+      this._appConsoleService.setErrorFoundTrue();
+    }
+
     if(this.counts[method] !== undefined){
       this.counts[method] += 1;
     } else {

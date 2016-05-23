@@ -4,21 +4,22 @@ import {Http, Headers, RequestOptions} from 'angular2/http';
 import {SystemInfoProvider} from './../providers/systemInfo.provider';
 import {Observable} from 'rxjs/Observable';
 import {ConsoleItem} from '../providers/consoleItem';
+import {Config} from 'ionic-angular';
+import {ConsoleDataProvider} from '../providers/consoleData.provider'
 import 'rxjs/Rx';
 
-let APP_URL = SERVER_URL + 'app/' + APP_ID + '/',
-    CONFIG_URL = 'consoleConfig/',
-    APP_INSTANCE_URL = SERVER_URL + 'appInstance/',
+let APP_INSTANCE_URL = SERVER_URL + 'appInstance/',
     CONSOLE_ITEM_URL = SERVER_URL + 'consoleItem/',
     CONSOLE_ITEM_ARG_URL = SERVER_URL + 'consoleItemArg/';
     // likesURL = propertiesURL + 'likes/';
 
 @Injectable()
 export class AppConsoleService {
-  data: any;
-  appInstanceId: any;
+  configRemote: any;
+  remoteConsoleId: any;
+  errorFound: boolean = false;
 
-    constructor (private http: Http, private systemInfoProvider: SystemInfoProvider) {
+    constructor (private http: Http, private systemInfoProvider: SystemInfoProvider, private config: Config) {
         // this.http = http;
     }
 
@@ -31,194 +32,144 @@ export class AppConsoleService {
     };
 
     getConfig() {
-      if (this.data) {
-        return Promise.resolve(this.data);
+      if (this.configRemote) {
+        return Promise.resolve(this.configRemote);
       }
 
-       return this.http.get(APP_URL + CONFIG_URL)
+      console.log("getting congig");
+
+       return this.http.get(this.config.get('consoleApiUrl') + 'apps/' + this.config.get('consoleApiToken'))
        .toPromise()
-       .then(res => this.data = res.json()).catch(()=> {
+       .then(res => this.configRemote = res.json().data).catch(()=> {
          return this.delay(5000).then(() => this.getConfig());
        });
     }
 
-    createNewAppInstance() {
+    setErrorFoundTrue(){
+      this.errorFound = true;
+    }
 
-      return this.systemInfoProvider.getUUID().then((uuid) => {
-        let data = {
-          "uuid": uuid,
-          "app": APP_ID,
-          "deviceInfo": {
-            "deviceName": "test"
+    createNewRemoteConsole() {
+
+      if (this.remoteConsoleId) {
+        return Promise.resolve(this.remoteConsoleId);
+      }
+
+        return this.systemInfoProvider.getDetails().then(deviceInfo => {
+
+          let deviceInfoObj = {};
+
+          console.log("device info", deviceInfo);
+
+          for (let key in deviceInfo) {
+              deviceInfoObj[deviceInfo[key].title] = deviceInfo[key].value;
           }
-        }
 
-        let body = JSON.stringify(data);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-
-       return this.http.post(APP_INSTANCE_URL, body, options)
-           .toPromise()
-           .then(res => {
-             var instance = res.json();
-             return instance.id;
-           })
-           .catch(err=>console.log(err));
-      })
-
-    }
-
-    getAppInstanceId() {
-
-      if (this.appInstanceId) {
-        return Promise.resolve(this.appInstanceId);
-      }
-
-      return this.systemInfoProvider.getUUID().then((uuid) => {
-        console.log(APP_INSTANCE_URL + "?uuid=" + uuid);
-        return this.http.get(APP_INSTANCE_URL + "?uuid=" + uuid )
-        .toPromise()
-        .then((res) => {
-          var instances = res.json();
-          if(instances.length > 0){
-            return this.appInstanceId = instances[0].id;
-          }else{
-            return this.appInstanceId = this.createNewAppInstance();
+          let data = {
+            "dateTimeCreated": Date.now(),
+            "deviceInfo": deviceInfoObj,
           }
-        });
-      });
+
+          console.log("device info", data);
+
+          let body = JSON.stringify(data);
+          let headers = new Headers({ 'Content-Type': 'application/json' });
+          let options = new RequestOptions({ headers: headers });
+
+            return this.http.post(this.config.get('consoleApiUrl') + 'apps/' + this.config.get('consoleApiToken') + '/logs', body, options)
+            .toPromise()
+            .then((res) => {
+              var instance = res.json().data;
+              console.log(instance);
+              return this.remoteConsoleId = instance._id;
+            }).catch(()=> {
+              return this.delay(5000).then(() => this.createNewRemoteConsole());
+            });
+
+
+        })
+
+
 
     }
 
-    sendConsoleItemArgs(consoleItem, consoleItemId){
-      let body = this.consoleItemProcessItemArgs(consoleItem, consoleItemId);
-      let headers = new Headers({ 'Content-Type': 'application/json' });
-      let options = new RequestOptions({ headers: headers });
-
-     return this.http.post(CONSOLE_ITEM_ARG_URL, body, options)
-         .toPromise().then(() =>{
-           return consoleItem;
-         })
-         .catch(err=>console.log(err));
-    }
-
-    sendConsoleItem(consoleItem){
-      let body = this.consoleItemProcessItem(consoleItem);
-      let headers = new Headers({ 'Content-Type': 'application/json' });
-      let options = new RequestOptions({ headers: headers });
-
-     return this.http.post(CONSOLE_ITEM_URL, body, options)
-         .toPromise()
-         .then(res => {
-           var consoleItemRet = res.json();
-           return this.sendConsoleItemArgs(consoleItem, consoleItemRet.id);
-         })
-         .catch(err=>console.log(err));
-    }
-
-    consoleItemProcessItemArgs(consoleItem, consoleItemId){
-      var newConsoleItemArguments = consoleItem.arguments;
-
-      for (var i in newConsoleItemArguments) {
-        newConsoleItemArguments[i].consoleItem = consoleItemId;
-      }
-
-      return JSON.stringify(newConsoleItemArguments);
-    }
-
-    consoleItemProcessItem(consoleItem){
-      var newConsoleItem = consoleItem;
-
-      function replacer(key,value)
-      {
-          if (key=="arguments") return undefined;
-          else return value;
-      }
-
-      return JSON.stringify(consoleItem, replacer);
-    }
 
     sendConsoleItems(data) {
 
-    this.getAppInstanceId().then((instanceId)=>{
+      var filteredData = this.filterData(data);
 
-      for (var i in data) {
-        //console.log("sendidng intance", data[i]); // 9,2,5
-        if(data[i].synced == false){
-          this.sendConsoleItem(data[i]).then((consoleItem: any)=>{
+      if(!filteredData ||
+        this.configRemote.sendNoData ||
+        (this.configRemote.sendOnlyOnError && this.errorFound == false) ||
+        (!this.configRemote.logErrors && !this.configRemote.logWarnings && !this.configRemote.logLogs)) {
+        console.log("zakazane posilani dat na server");
+      } else {
 
-            consoleItem.synced = true;
-          });
-        }
+        this.createNewRemoteConsole().then(()=>{
+
+            let body = JSON.stringify(filteredData);
+            let headers = new Headers({ 'Content-Type': 'application/json' });
+            let options = new RequestOptions({ headers: headers });
+
+           return this.http.post(this.config.get('consoleApiUrl') + 'logs/' + this.remoteConsoleId + '/items', body, options)
+               .toPromise()
+               .then(res => {
+
+                 for (var i in data) {
+                       data[i].synced = true;
+                 }
+
+                 return true;
+               })
+               .catch(err=>console.log(err));
+
+        });
+
       }
 
 
-      // let data = {
-      //   "method": "error",
-      //   "dateTime": new Date().toISOString(),
-      //   "appInstance": instanceId,
-      //   "consoleItemArguments": [
-      //     {
-      //       "type": "String",
-      //       "value": "Testovaci string"
-      //     },
-      //     {
-      //       "type": "Object",
-      //       "value": "{obj: 15}"
-      //     }
-      //   ]
-      // }
 
 
 
-
-
-    });
-
-
-      //  return this.http.get(APP_URL + CONFIG_URL)
-      //  .toPromise()
-      //  .then(res => this.data = res.json(), err => console.log(err));
     }
 
-    // findAll() {
-    //     return this.http.get(propertiesURL)
-    //         .map(res => res.json())
-    //         .catch(this.handleError);
-    // }
-    //
-    // getFavorites() {
-    //     return this.http.get(favoritesURL)
-    //         .map(res => res.json())
-    //         .catch(this.handleError);
-    // }
-    //
-    // like(property) {
-    //     let body = JSON.stringify(property);
-    //     let headers = new Headers({ 'Content-Type': 'application/json' });
-    //     let options = new RequestOptions({ headers: headers });
-    //     return this.http.post(likesURL, body, options)
-    //         .map(res => res.json())
-    //         .catch(this.handleError);
-    // }
-    //
-    // favorite(property) {
-    //     let body = JSON.stringify(property);
-    //     let headers = new Headers({ 'Content-Type': 'application/json' });
-    //     let options = new RequestOptions({ headers: headers });
-    //     return this.http.post(favoritesURL, body, options)
-    //         .catch(this.handleError);
-    // }
-    //
-    // unfavorite(property) {
-    //     return this.http.delete(favoritesURL + property.id)
-    //         .map(res => res.json())
-    //         .catch(this.handleError);
-    // }
+    filterData(data){
+      var dataNew = [];
 
-    // handleError(error) {
-    //     console.error(error);
-    //     return Observable.throw(error.json().error || 'Server error');
-    // }
+
+      for(var n in data) {
+        if(!data[n].synced){
+          dataNew.push(data[n]);
+        }
+      }
+
+      if(!this.configRemote.logErrors) {
+        for(var n in dataNew) {
+          if(dataNew[n].method == "error"){
+            dataNew.splice(parseInt(n), 1);
+          }
+        }
+      }
+
+      if(!this.configRemote.logWarnings) {
+        for(var n in dataNew) {
+          if(dataNew[n].method == "warn"){
+            dataNew.splice(parseInt(n), 1);
+          }
+        }
+      }
+
+      if(!this.configRemote.logLogs) {
+        for(var n in dataNew) {
+          if(dataNew[n].method == "log"){
+            dataNew.splice(parseInt(n), 1);
+          }
+        }
+      }
+
+      return dataNew;
+
+    }
+
 
 }
