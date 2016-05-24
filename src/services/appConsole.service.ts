@@ -36,8 +36,6 @@ export class AppConsoleService {
         return Promise.resolve(this.configRemote);
       }
 
-      console.log("getting congig");
-
        return this.http.get(this.config.get('consoleApiUrl') + 'apps/' + this.config.get('consoleApiToken'))
        .toPromise()
        .then(res => this.configRemote = res.json().data).catch(()=> {
