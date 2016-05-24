@@ -18,7 +18,7 @@ or from local folder
 $ npm install relative_path_to_local_folder_with_this_repo --save
 ```
 
-Then set up your application app.ts file:
+Then set up your application app.ts like in example:
 
 https://github.com/lpikora/ionic-debug-console-testapp
 
@@ -29,6 +29,26 @@ To generate all `*.js`, `*.js.map` and `*.d.ts` files:
 ```bash
 $ npm run tsc
 ```
+
+## Other repos
+
+### Ionic Debug Console Server
+
+Ionic Debug Console server with REST API for error tracking.
+
+https://github.com/lpikora/ionic-debug-console-backend-api
+
+### Ionic Debug Console Server UI
+
+User interface for Ionic Debug Console Server. Provide managing apps and displaying tracked logs and errors.
+
+https://github.com/lpikora/ionic-debug-console-backend-ui
+
+### Example app with Ionic Debug Console intergation
+
+Example of Ionic Debug Console itegration in Ionic 2 app.
+
+https://github.com/lpikora/ionic-debug-console-testapp
 
 ## License
 
