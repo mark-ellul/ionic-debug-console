@@ -1,6 +1,6 @@
-import {Injectable, Inject} from 'angular2/core';
+import {Injectable, Inject} from '@angular/core';
 import {SERVER_URL, APP_ID} from './config';
-import {Http, Headers, RequestOptions} from 'angular2/http';
+import {Http, Headers, RequestOptions} from '@angular/http';
 import {SystemInfoProvider} from './../providers/systemInfo.provider';
 import {Observable} from 'rxjs/Observable';
 import {ConsoleItem} from '../providers/consoleItem';

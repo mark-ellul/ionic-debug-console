@@ -1,4 +1,4 @@
-import {ViewEncapsulation} from 'angular2/core'
+import {ViewEncapsulation} from '@angular/core'
 import {Page} from 'ionic-angular';
 import {Device} from 'ionic-native';
 import {SystemInfoProvider} from './../../providers/systemInfo.provider';
@@ -18,7 +18,7 @@ import {SystemInfoProvider} from './../../providers/systemInfo.provider';
      Hardware info access failed.
     </div>
     <ion-list class="list">
-      <ion-item *ngFor="#item of items" (click)="itemSelected(item)">
+      <ion-item *ngFor="let item of items" (click)="itemSelected(item)">
         {{item.title}} <span class="list-value">{{item.value}}</span>
       </ion-item>
     </ion-list>

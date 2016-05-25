@@ -1,7 +1,6 @@
-import {Component,ElementRef, Renderer, OnDestroy, OnInit, ViewEncapsulation} from 'angular2/core';
+import {Component,ElementRef, Renderer, OnDestroy, OnInit, ViewEncapsulation, ViewChild, Input} from '@angular/core';
 import {TabsPage} from './../../pages/tabs/tabs';
-import {Button, IonicApp, Events, Modal, Icon} from 'ionic-angular';
-//import {Draggable} from './consoleButtonDraggable.directive';
+import {Button, IonicApp, Events, Modal, Icon, Nav} from 'ionic-angular';
 import {ConsoleButtonDraggable} from './consoleButtonDraggable.directive';
 import {ConsoleDataProvider} from '../../providers/consoleData.provider';
 
@@ -32,12 +31,14 @@ import {ConsoleDataProvider} from '../../providers/consoleData.provider';
   }
 `],
   encapsulation: ViewEncapsulation.None,
-  directives: [Button, ConsoleButtonDraggable, Icon],
+  directives: [Button, ConsoleButtonDraggable, Icon]
 })
 export class ConsoleButtonComponent {
+  @Input('content') nav: Nav;
+
   isConsoleOpen: boolean;
 
- constructor(private app: IonicApp, private events: Events, private _consoleDataProvider: ConsoleDataProvider) {
+ constructor(private events: Events, private _consoleDataProvider: ConsoleDataProvider) {
    this.isConsoleOpen = false;
 
 
@@ -46,31 +47,16 @@ export class ConsoleButtonComponent {
    });
  }
 
-  // itemTapped(event) {
-  //    this.nav.push(TabsPage);
-  // }
-
- //  ngAfterViewInit() {
- //   var nav = this.app.getComponent('my-nav');
- //   // Let's navigate from TabsPage to Page1
- //   nav.push(TabsPage);
- // }
-
  consoleOpen() {
-  var nav = this.app.getComponent('nav');
-  // Let's navigate from TabsPage to Page1
 
   let modal = Modal.create(TabsPage);
 
   modal.onDismiss(data => {
-       console.log("close modal");
        this.isConsoleOpen = false;
   });
 
   this.isConsoleOpen = true;
-  nav.present(modal);
-
-
+  this.nav.present(modal);
 }
 
 getErrors() {

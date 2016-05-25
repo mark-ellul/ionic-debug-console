@@ -1,10 +1,10 @@
-import {Component, ElementRef, Input} from 'angular2/core';
+import {Component, ElementRef, Input} from '@angular/core';
 
 declare var hljs: any;
 
 @Component({
   selector: 'console-argument-code',
-  template: `<code class="json">{{value}}</code>`
+  template: `<code class="json">{{value}}</code>`,
 })
 export class ConsoleArgumentCodeComponent {
   @Input()

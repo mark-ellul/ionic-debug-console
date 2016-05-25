@@ -1,4 +1,4 @@
-import {OnInit, ViewEncapsulation} from 'angular2/core';
+import {OnInit, ViewEncapsulation} from '@angular/core';
 import {Page, NavController, IonicApp, Events, ViewController} from 'ionic-angular';
 import {ConsoleDataProvider} from './../../providers/consoleData.provider';
 import {ConsoleItem} from './../../providers/consoleItem';
@@ -32,10 +32,10 @@ import {ConsoleArgumentComponent} from './../../components/consoleArgument.compo
       <div class="no-items">
         No items found.
       </div>
-      <div *ngFor="#item of items">
+      <div *ngFor="let item of items">
         <div [hidden]="isItemHidden(item.method)" class="console-item">
           <span class="{{item.method}}">[{{item.method}}]</span>
-          <span *ngFor="#arg of item.arguments">
+          <span *ngFor="let arg of item.arguments">
             <span *ngIf="arg.type == 'String' || arg.type == 'Number'">{{arg.value}}</span>
             <console-argument *ngIf="arg.type != 'String' && arg.type != 'Number'" [arg]="arg"></console-argument>
           </span>

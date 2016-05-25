@@ -6,13 +6,8 @@ npm-debug.log
 *.js
 *.map
 *.d.ts
+typings
 
-# JetBrains
-.idea
-.project
-.settings
-.idea/*
-*.iml
 
 # Windows
 Thumbs.db
@@ -21,3 +16,6 @@ Desktop.ini
 # Mac
 .DS_Store
 **/.DS_Store
+
+# other
+npm-debug.log
