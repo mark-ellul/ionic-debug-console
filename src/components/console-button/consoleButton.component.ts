@@ -56,7 +56,17 @@ export class ConsoleButtonComponent {
   });
 
   this.isConsoleOpen = true;
-  this.nav.present(modal);
+
+  try{
+    this.nav.present(modal);
+  }catch(e){
+
+    if(typeof this.nav == 'undefined'){
+      console.error("Ionic Debug Console was not properly initialized. See GitHub page.");
+    }
+    console.error(e);
+  }
+
 }
 
 getErrors() {

@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Platform} from 'ionic-angular';
 import {Device} from 'ionic-native';
 import {ConsoleItem} from './consoleItem';
+import {ConfProvider} from './conf.provider';
 import {SystemInfoProvider} from './systemInfo.provider';
 import {AppConsoleService} from './../services/appConsole.service';
 
@@ -9,35 +10,28 @@ import {AppConsoleService} from './../services/appConsole.service';
 @Injectable()
 export class ConsoleDataProvider {
   data: ConsoleItem[] = [];
-  consoleConfig: any;
   timer: any;
   uuid: any = 12541;
   counts: number[] = [];
 
   constructor(private _appConsoleService: AppConsoleService,
               private platform: Platform,
-              private systemInfoProvider: SystemInfoProvider) {}
+              private systemInfoProvider: SystemInfoProvider,
+              private config: ConfProvider) {}
 
-  init() {
+  init(userConfig) {
     this.catchConsoleMethods();
-    this.setSendingInterval();
-  }
-
-  getConfig() {
-    return this._appConsoleService.getConfig().then(data => this.consoleConfig = data);
+    this.config.initConfig(userConfig).then( () => {
+      this.config.initServerConfig(userConfig, this._appConsoleService).then( () => {
+        if(this.config.get("reporting") == true){
+          this.setSendingInterval();
+        }
+      });
+    });
   }
 
   setSendingInterval(){
-    this.getConfig().then(() => {
-
-      console.log("config object",this.consoleConfig);
-
-      if(!this.consoleConfig.communicationInterval){
-        this.consoleConfig.communicationInterval = 20;
-      }
-      this.timer = setInterval(() => this.sendDataToServer(), this.consoleConfig.communicationInterval * 1000);
-      console.log("communication interval",this.consoleConfig.communicationInterval);
-    });
+      this.timer = setInterval(() => this.sendDataToServer(), this.config.get("communicationInterval"));
   }
 
   sendDataToServer(){
