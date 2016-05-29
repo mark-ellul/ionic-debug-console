@@ -12,15 +12,40 @@ To install this library, run:
 $ npm install ionic-debug-console --save
 ```
 
-or from local folder
+Then require the console library in app.ts.
 
-```bash
-$ npm install relative_path_to_local_folder_with_this_repo --save
+```typescript
+import * as cons from 'ionic-debug-console/ionic-debug-console';
 ```
 
-Then set up your application app.ts like in example:
+Add providers and directives to @App metadata in app.ts
+
+```typescript
+providers: [cons.ConfProvider, cons.ConsoleDataProvider, cons.AppConsoleService, cons.SystemInfoProvider],
+directives: [cons.ConsoleButtonComponent]
+```
+
+Pass ConsoleDataProvider instance to @App class constructor and init console with some config.
+
+```typescript
+constructor(private _consoleDataProvider: cons.ConsoleDataProvider){
+  this._consoleDataProvider.init({apiUrl: 'http://localhost:3000/',
+                                  apiToken: '574a946146bab50828200f3e',
+                                  reporting: true});
+}
+```
+
+Put console button component to @App template. Don\`t forget pass `content`. 
+
+```html
+<console-button [content]="content"></console-button>
+```
+
+Example application with integration described above:
 
 https://github.com/lpikora/ionic-debug-console-testapp
+
+## Configuration
 
 ## Development
 
