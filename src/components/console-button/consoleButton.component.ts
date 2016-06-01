@@ -3,10 +3,11 @@ import {TabsPage} from './../../pages/tabs/tabs';
 import {Button, IonicApp, Events, Modal, Icon, Nav} from 'ionic-angular';
 import {ConsoleButtonDraggable} from './consoleButtonDraggable.directive';
 import {ConsoleDataProvider} from '../../providers/consoleData.provider';
+import {ConfProvider} from './../../providers/conf.provider';
 
 @Component({
   selector: 'console-button',
-  template: `<button button-draggable [hidden]="isConsoleOpen" (click)="consoleOpen()" dark outline><ion-icon name="move"></ion-icon> &nbsp;
+  template: `<button button-draggable [hidden]="isConsoleOpen" (click)="consoleOpen()" *ngIf="render" dark outline><ion-icon name="move"></ion-icon> &nbsp;
   <span class="errors">{{getErrors()}}E</span> &nbsp;
   <span class="warnings">{{getWarnings()}}W</span> &nbsp;
   <span class="logs">{{getLogs()}}L</span> &nbsp; | &nbsp;
@@ -36,15 +37,23 @@ import {ConsoleDataProvider} from '../../providers/consoleData.provider';
 export class ConsoleButtonComponent {
   @Input('content') nav: Nav;
 
-  isConsoleOpen: boolean;
+  render: boolean = true;
+  isConsoleOpen: boolean = true;
 
- constructor(private events: Events, private _consoleDataProvider: ConsoleDataProvider) {
-   this.isConsoleOpen = false;
-
-
-   this.events.subscribe('console:closed', () => {
+ constructor(private events: Events,
+             private _consoleDataProvider: ConsoleDataProvider,
+             private el: ElementRef,
+             private renderer: Renderer,
+             private config: ConfProvider)
+ {
+   if(this.config.get("production")){
+     this.render = false;
+   } else {
      this.isConsoleOpen = false;
-   });
+     this.events.subscribe('console:closed', () => {
+       this.isConsoleOpen = false;
+     });
+   }
  }
 
  consoleOpen() {

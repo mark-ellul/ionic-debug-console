@@ -50,11 +50,16 @@ export class ConsoleDataProvider {
         that.pushItem(method, arguments);
             if (original.apply){
                 // Do this for normal browsers
-                original.apply(console, arguments)
+                if(!that.config.get("production")) {
+                  original.apply(console, arguments)
+                }
+
             }else{
                 // Do this for IE
-                var message = Array.prototype.slice.apply(arguments).join(' ')
-                original(message)
+                if(!that.config.get("production")) {
+                  var message = Array.prototype.slice.apply(arguments).join(' ')
+                  original(message)
+                }
             }
         }
     }

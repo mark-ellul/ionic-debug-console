@@ -7,7 +7,8 @@ export class ConfProvider {
     communicationInterval: 10000, // 10 seconds
     apiUrl: 'http://localhost:3000/',
     apiToken: undefined,
-    reporting: false
+    reporting: false,
+    production: false
   };
 
   constructor() {}
