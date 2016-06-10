@@ -1,9 +1,8 @@
-import {ViewEncapsulation} from '@angular/core'
-import {Page} from 'ionic-angular';
+import {Component, ViewEncapsulation} from '@angular/core'
 import {Device} from 'ionic-native';
 import {SystemInfoProvider} from './../../providers/systemInfo.provider';
 
-@Page({
+@Component({
   template: `
   <ion-navbar *navbar>
     <ion-title>
@@ -58,7 +57,7 @@ export class SystemInfo {
 
   }
 
-  onPageWillEnter() {
+  ionViewWillEnter() {
     try {
       throw new Error("test");
     }

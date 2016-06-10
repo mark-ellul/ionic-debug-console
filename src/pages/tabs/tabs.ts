@@ -1,9 +1,9 @@
-import {Page, Modal, NavController, ViewController} from 'ionic-angular';
+import {Component} from '@angular/core'
+import {Modal, NavController, ViewController} from 'ionic-angular';
 import {Console} from '../console/console';
 import {SystemInfo} from '../systemInfo/systemInfo';
 
-
-@Page({
+@Component({
   template: `<button small (click)="close()" style="position: absolute; top: 0px; right: 7px; z-index: 999;">
     <ion-icon name="close"></ion-icon>
   </button>

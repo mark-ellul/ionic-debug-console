@@ -1,6 +1,6 @@
 import {Component,ElementRef, Renderer, OnDestroy, OnInit, ViewEncapsulation, ViewChild, Input} from '@angular/core';
 import {TabsPage} from './../../pages/tabs/tabs';
-import {Button, IonicApp, Events, Modal, Icon, Nav} from 'ionic-angular';
+import {Button, App, Events, Modal, Icon, Nav} from 'ionic-angular';
 import {ConsoleButtonDraggable} from './consoleButtonDraggable.directive';
 import {ConsoleDataProvider} from '../../providers/consoleData.provider';
 import {ConfProvider} from './../../providers/conf.provider';

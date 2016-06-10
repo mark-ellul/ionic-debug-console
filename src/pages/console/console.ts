@@ -1,11 +1,11 @@
-import {OnInit, ViewEncapsulation} from '@angular/core';
-import {Page, NavController, IonicApp, Events, ViewController} from 'ionic-angular';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {NavController, App, Events, ViewController} from 'ionic-angular';
 import {ConsoleDataProvider} from './../../providers/consoleData.provider';
 import {ConsoleItem} from './../../providers/consoleItem';
 import {ConsoleArgumentComponent} from './../../components/consoleArgument.component';
 
 
-@Page({
+@Component({
   template: `<ion-navbar *navbar>
     <ion-title>Console</ion-title>
   </ion-navbar>
@@ -112,7 +112,7 @@ export class Console {
   itemType: any = "all";
 
   constructor(private _consoleDataProvider: ConsoleDataProvider,
-              private app: IonicApp,
+              private app: App,
               private nav: NavController,
               private events: Events,
               private viewController: ViewController)
@@ -121,7 +121,7 @@ export class Console {
   //  this.nav = nav;
   }
 
-onPageWillEnter() {
+ionViewWillEnter() {
   this._consoleDataProvider.getConsoleDebugItems().then(data => {
     this.items = data;
   });
