@@ -1,6 +1,6 @@
 {
   "name": "ionic-debug-console",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "scripts": {
     "tsc": "tsc",
     "typings": "typings",
