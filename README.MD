@@ -18,24 +18,38 @@ Then require the console library in app.ts.
 import * as cons from 'ionic-debug-console/ionic-debug-console';
 ```
 
-Add providers and directives to @App metadata in app.ts
+Add Ionic Debug Console button directive to `@Component` metadata in `app.ts`:
 
 ```typescript
-providers: [cons.ConfProvider, cons.ConsoleDataProvider, cons.AppConsoleService, cons.SystemInfoProvider],
-directives: [cons.ConsoleButtonComponent]
+@Component({
+  templateUrl: 'build/app.html',
+  directives: [cons.ConsoleButtonComponent]
+})
 ```
 
-Pass ConsoleDataProvider instance to @App class constructor and init console with some config.
+Pass ConsoleDataProvider instance to @Component class constructor and init console with some config.
 
 ```typescript
-constructor(private _consoleDataProvider: cons.ConsoleDataProvider){
-  this._consoleDataProvider.init({apiUrl: 'http://localhost:3000/',
+constructor(private consoleDataProvider: cons.ConsoleDataProvider){
+  this.consoleDataProvider.init({apiUrl: 'http://localhost:3000/',
                                   apiToken: '574a946146bab50828200f3e',
                                   reporting: true});
 }
 ```
 
-Put console button component to @App template. Don\`t forget pass `content`.
+Add Ionic Debug Console providers to ionicBootstrap function:
+
+```typescript
+ionicBootstrap(AppClass,
+               [cons.ConfProvider,
+                cons.ConsoleDataProvider,
+                cons.AppConsoleService,
+                cons.SystemInfoProvider], {}
+              );
+```
+
+
+Put console button component to @Component template in `app.html`. Don\`t forget pass `content`.
 
 ```html
 <console-button [content]="content"></console-button>
@@ -43,18 +57,16 @@ Put console button component to @App template. Don\`t forget pass `content`.
 
 Example application with integration described above:
 
-https://github.com/lpikora/ionic-debug-console-testapp
+https://github.com/lpikora/ionic-conference-app
 
 ## Configuration
 
 Configuration is pass as object with properties to `init` function of `ConsoleDataProvider`. For example:
 
 ```typescript
-constructor(private _consoleDataProvider: cons.ConsoleDataProvider){
-  this._consoleDataProvider.init({apiUrl: 'http://localhost:3000/',
+  this.consoleDataProvider.init({apiUrl: 'http://localhost:3000/',
                                   apiToken: '574a946146bab50828200f3e',
                                   reporting: true});
-}
 ```
 
 When **reporting** set `true`, some configuration values are load from server application settings. Values passed to init() function has always prioprity and rewrite application configuration from server.
@@ -95,7 +107,7 @@ https://github.com/lpikora/ionic-debug-console-backend-ui
 
 Example of Ionic Debug Console itegration in Ionic 2 app.
 
-https://github.com/lpikora/ionic-debug-console-testapp
+https://github.com/lpikora/ionic-conference-app
 
 ## License
 
