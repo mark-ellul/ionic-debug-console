@@ -23,9 +23,14 @@ export class ConsoleDataProvider {
     this.catchConsoleMethods();
     this.config.initConfig(userConfig).then( () => {
       this.config.initServerConfig(userConfig, this._appConsoleService).then( () => {
-        if(this.config.get("reporting") == true){
-          this.setSendingInterval();
+        this.setSendingInterval();
+
+        // TODO: parse the pouchDbDocument structure so that we know where to put the console logs
+        /*let pouchDbReporting = this.config.get("pouchDbReporting");
+        if (pouchDbReporting) {
+
         }
+        */
       });
     });
   }

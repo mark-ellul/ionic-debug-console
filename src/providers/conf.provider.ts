@@ -4,11 +4,18 @@ import {AppConsoleService} from './../services/appConsole.service';
 @Injectable()
 export class ConfProvider {
   config: any = {
-    communicationInterval: 10000, // 10 seconds
+    communicationInterval: 60000, // 60 seconds
     apiUrl: 'http://localhost:3000/',
     apiToken: undefined,
-    reporting: false,
-    production: false
+    restReporting: false,
+    production: false,
+    pouchDbReporting: true,
+    pouchDbName: "",
+    /*
+    pouchDocStructure: {
+      type: "console_log",
+      content: "[[data]]"
+    }*/
   };
 
   constructor() {}
@@ -22,10 +29,12 @@ export class ConfProvider {
 
   initServerConfig(userConfig, appConsoleService: AppConsoleService){
     return new Promise(resolve => {
-         if(this.config.reporting == true){
+         if(this.config.restReporting == true){
            appConsoleService.getConfig().then((serverConfig) => {
              var newConfig = this.mergeConfigs(this.config, serverConfig); // first rewrite with server config
              this.config = this.mergeConfigs(newConfig, userConfig); // first rewrite with server config
+             resolve();
+           }).catch((err)=>{
              resolve();
            });
          }else{

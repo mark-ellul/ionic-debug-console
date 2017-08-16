@@ -6,6 +6,7 @@ import {Observable} from 'rxjs/Observable';
 import {ConsoleItem} from '../providers/consoleItem';
 import {ConsoleDataProvider} from '../providers/consoleData.provider';
 import 'rxjs/Rx';
+import PouchDB from 'pouchdb';
 
 @Injectable()
 export class AppConsoleService {
@@ -86,9 +87,13 @@ export class AppConsoleService {
         console.log("Will not send anything to server.");
       } else {
 
-        this.createNewRemoteConsole().then(()=>{
+        let restReporting = this.config.get("restReporting");
+        let pouchDbReporting = this.config.get("pouchDbReporting");
+        let body = JSON.stringify(filteredData);
+        if (restReporting) {
+          this.createNewRemoteConsole().then(()=>{
 
-            let body = JSON.stringify(filteredData);
+            
             let headers = new Headers({ 'Content-Type': 'application/json' });
             let options = new RequestOptions({ headers: headers });
 
@@ -104,8 +109,30 @@ export class AppConsoleService {
                })
                .catch(err=>console.log(err));
 
-        });
+          });
 
+        }
+
+        if (pouchDbReporting) {
+          //let pouchDocStructure = this.config.get("pouchDocStructure");
+          // going to use fixed structure for now
+          let pouchDBDatabase = this.config.get("pouchDbName");
+          let pouchDB = new PouchDB(pouchDBDatabase);
+          let filteredDataWithIndex = this.filterDataWithIndex(data);
+          let docData = {
+            type: "console_log",
+            content: filteredDataWithIndex
+          }
+          pouchDB.post(docData).then(()=>{ 
+            for (var i in filteredDataWithIndex) {
+              var f = filteredDataWithIndex[i];
+              data[f.n].synced = true;
+            }
+
+          });
+
+        }
+        
       }
 
 
@@ -151,6 +178,44 @@ export class AppConsoleService {
       return dataNew;
 
     }
+
+  filterDataWithIndex(data) {
+    var dataNew = [];
+
+
+      for(var n in data) {
+        if(!data[n].synced){
+          dataNew.push({n: n, data: data[n]});
+        }
+      }
+
+      if(!this.config.get("logErrors")) {
+        for(var n in dataNew) {
+          if(dataNew[n].data.method == "error"){
+            dataNew.splice(parseInt(n), 1);
+          }
+        }
+      }
+
+      if(!this.config.get("logWarnings")) {
+        for(var n in dataNew) {
+          if(dataNew[n].data.method == "warn"){
+            dataNew.splice(parseInt(n), 1);
+          }
+        }
+      }
+
+      if(!this.config.get("logLogs")) {
+        for(var n in dataNew) {
+          if(dataNew[n].data.method == "log"){
+            dataNew.splice(parseInt(n), 1);
+          }
+        }
+      }
+
+      return dataNew;
+
+  }
 
 
 }
